@@ -51,6 +51,12 @@ class App extends React.Component {
   onRemovePlayerClick(id) {
     this.setState({ players: [...this.state.players.slice(0, id), ...this.state.players.slice(id + 1)] });
   }
+  onResetClick() {
+    const players = this.state.players.map(v => {
+      return { ...v, score: 0, diff: 0 };
+    });
+    this.setState({ players });
+  }
   render() {
     const renderPlayers = this.state.players.map((p, id) =>
         <Player
@@ -63,9 +69,11 @@ class App extends React.Component {
           onRemovePlayerClick={() => this.onRemovePlayerClick(id)}
         />
       );
+    const resetButton = this.state.players.length > 0 ? <button style={{ fontSize: '2em', width: '100%', minHeight: '48px' }} onClick={() => this.onResetClick()}>Reset</button> : false;
     return (
       <div>
         <div>{renderPlayers}</div>
+        {resetButton}
         <AddPlayer onAddPlayerClick={this.onAddPlayerClick} />
       </div>
     );
