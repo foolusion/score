@@ -5,6 +5,8 @@ var gutil = require('gulp-util');
 var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var watchify = require('watchify');
+var uglify = require('gulp-uglify');
+var buffer = require('vinyl-buffer');
 
 var b = watchify(browserify({
   entries: 'src/index.js',
@@ -12,11 +14,14 @@ var b = watchify(browserify({
 }));
 
 b.transform(babelify, {presets: ['es2015', 'stage-2', 'react']});
+
 b.on('update', bundle);
 b.on('log', gutil.log)
 function bundle() {
   return b.bundle()
   .pipe(source('bundle.js'))
+  .pipe(buffer())
+  .pipe(uglify())
   .pipe(sourcemaps.write('./'))
   .pipe(gulp.dest('./dist'));
 };
