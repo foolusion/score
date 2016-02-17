@@ -45,7 +45,7 @@ const buttonStyle = {
 };
 
 const Player = props => {
-  const { name, score, diff, onSaveClick, onClearClick, onScoreAddClick } = props;
+  const { name, score, diff, onSaveClick, onClearClick, onScoreAddClick, onRemovePlayerClick } = props;
   let saveButton = false;
   let clearButton = false;
   if (diff !== 0) {
@@ -60,6 +60,7 @@ const Player = props => {
     >{v}</button>);
 
   return (
+    <div style={{ position: 'relative' }}>
     <div style={style}>
       <div style={{ flex: '2 0 0', display: 'flex' }}>
         <div style={{ flex: '0 2 75%' }}><h1>{name}</h1></div>
@@ -72,6 +73,8 @@ const Player = props => {
       </div>
       <div style={{ flex: '1 0 0', display: 'flex' }}>{clearButton}{saveButton}</div>
       <div style={{ flex: '0 0 100%', display: 'flex' }}>{addScoreButtons}</div>
+      <div style={{ display: 'block', position: 'absolute', right: '15px', top: '0px', fontSize: '2em' }} onClick={onRemovePlayerClick}>×</div>
+    </div>
     </div>
   );
 };
@@ -85,6 +88,7 @@ const propTypes = {
   onSaveClick: PropTypes.func.isRequired,
   onClearClick: PropTypes.func.isRequired,
   onScoreAddClick: PropTypes.func.isRequired,
+  onRemovePlayerClick: PropTypes.func.isRequired,
 };
 
 Player.propTypes = propTypes;

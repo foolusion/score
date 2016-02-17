@@ -2,16 +2,29 @@ import React from 'react';
 import Player from './Player';
 import AddPlayer from './AddPlayer';
 
+const localStorageKey = 'state';
+
+function initialState() {
+  const a = localStorage.getItem(localStorageKey);
+  if (!a) {
+    localStorage.removeItem(localStorageKey);
+    return { players: [] };
+  }
+  return JSON.parse(a);
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      players: [],
-    };
+    this.state = initialState();
     this.onSaveClick = this.onSaveClick.bind(this);
     this.onScoreAddClick = this.onScoreAddClick.bind(this);
     this.onAddPlayerClick = this.onAddPlayerClick.bind(this);
+    this.onRemovePlayerClick = this.onRemovePlayerClick.bind(this);
+  }
+  componentWillUpdate(_, state) {
+    localStorage.setItem(localStorageKey, JSON.stringify(state));
   }
   onSaveClick(id) {
     const { score, diff } = this.state.players[id];
@@ -35,6 +48,9 @@ class App extends React.Component {
     const p = { name, score: 0, diff: 0, active: false };
     this.setState({ players: [...this.state.players, p] });
   }
+  onRemovePlayerClick(id) {
+    this.setState({ players: [...this.state.players.slice(0, id), ...this.state.players.slice(id + 1)] });
+  }
   render() {
     const renderPlayers = this.state.players.map((p, id) =>
         <Player
@@ -44,6 +60,7 @@ class App extends React.Component {
           onSaveClick={() => this.onSaveClick(id)}
           onClearClick={() => this.onClearClick(id)}
           onScoreAddClick={this.onScoreAddClick.bind(this, id)}
+          onRemovePlayerClick={() => this.onRemovePlayerClick(id)}
         />
       );
     return (
