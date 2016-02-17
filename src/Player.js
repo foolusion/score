@@ -42,6 +42,7 @@ const buttonStyle = {
   minHeight: '48px',
   minWidth: '48px',
   flex: '1 0 0',
+  fontSize: '1.5em',
 };
 
 const Player = props => {
