@@ -1,8 +1,15 @@
 import React from 'react';
 import { render } from 'react-dom';
-import App from './App';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import AppContainer from './AppContainer';
+import { scoreApp } from './reducers';
+
+const store = createStore(scoreApp);
 
 render(
-  <App />,
+  <Provider store={store}>
+    <AppContainer />
+  </Provider>,
   document.querySelector('#app')
 );

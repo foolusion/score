@@ -1,83 +1,40 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Player from './Player';
-import AddPlayer from './AddPlayer';
+import ResetButton from './ResetButton';
+import AddPlayerContainer from './AddPlayerContainer';
 
-const localStorageKey = 'state';
+const propTypes = {
+  players: PropTypes.array.isRequired,
+  onSaveClick: PropTypes.func.isRequired,
+  onClearClick: PropTypes.func.isRequired,
+  onScoreAddClick: PropTypes.func.isRequired,
+  onRemovePlayerClick: PropTypes.func.isRequired,
+  onResetClick: PropTypes.func.isRequired,
+};
 
-function initialState() {
-  const a = localStorage.getItem(localStorageKey);
-  if (!a) {
-    localStorage.removeItem(localStorageKey);
-    return { players: [] };
-  }
-  return JSON.parse(a);
-}
+const App = props => {
+  const { players, onSaveClick, onClearClick, onScoreAddClick, onRemovePlayerClick } = props;
+  const renderPlayers = players.map((p, id) =>
+      <Player
+        key={id}
+        id={id}
+        {...p}
+        onSaveClick={() => onSaveClick(id)}
+        onClearClick={() => onClearClick(id)}
+        onScoreAddClick={score => onScoreAddClick(id, score)}
+        onRemovePlayerClick={() => onRemovePlayerClick(id)}
+      />
+  );
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
+  return (
+    <div>
+      <div>{renderPlayers}</div>
+      <ResetButton {... props} />
+      <AddPlayerContainer/>
+    </div>
+  );
+};
 
-    this.state = initialState();
-    this.onSaveClick = this.onSaveClick.bind(this);
-    this.onScoreAddClick = this.onScoreAddClick.bind(this);
-    this.onAddPlayerClick = this.onAddPlayerClick.bind(this);
-    this.onRemovePlayerClick = this.onRemovePlayerClick.bind(this);
-  }
-  componentWillUpdate(_, state) {
-    localStorage.setItem(localStorageKey, JSON.stringify(state));
-  }
-  onSaveClick(id) {
-    const { score, diff } = this.state.players[id];
-    const p = { ...this.state.players[id], score: score + diff, diff: 0 };
-    const players = [...this.state.players.slice(0, id), p, ...this.state.players.slice(id + 1)];
-    this.setState({ players });
-    return true;
-  }
-  onClearClick(id) {
-    const p = { ...this.state.players[id], diff: 0 };
-    this.setState({ players: [...this.state.players.slice(0, id), p, ...this.state.players.slice(id + 1)] });
-  }
-  onScoreAddClick(id, amount) {
-    const { diff } = this.state.players[id];
-    const p = { ...this.state.players[id], diff: diff + amount };
-    const players = [...this.state.players.slice(0, id), p, ...this.state.players.slice(id + 1)];
-    this.setState({ players });
-    return true;
-  }
-  onAddPlayerClick(name) {
-    const p = { name, score: 0, diff: 0, active: false };
-    this.setState({ players: [...this.state.players, p] });
-  }
-  onRemovePlayerClick(id) {
-    this.setState({ players: [...this.state.players.slice(0, id), ...this.state.players.slice(id + 1)] });
-  }
-  onResetClick() {
-    const players = this.state.players.map(v => {
-      return { ...v, score: 0, diff: 0 };
-    });
-    this.setState({ players });
-  }
-  render() {
-    const renderPlayers = this.state.players.map((p, id) =>
-        <Player
-          key={id}
-          id={id}
-          {...p}
-          onSaveClick={() => this.onSaveClick(id)}
-          onClearClick={() => this.onClearClick(id)}
-          onScoreAddClick={this.onScoreAddClick.bind(this, id)}
-          onRemovePlayerClick={() => this.onRemovePlayerClick(id)}
-        />
-      );
-    const resetButton = this.state.players.length > 0 ? <button style={{ fontSize: '2em', width: '100%', minHeight: '48px' }} onClick={() => this.onResetClick()}>Reset</button> : false;
-    return (
-      <div>
-        <div>{renderPlayers}</div>
-        {resetButton}
-        <AddPlayer onAddPlayerClick={this.onAddPlayerClick} />
-      </div>
-    );
-  }
-}
+App.propTypes = propTypes;
 
 export default App;

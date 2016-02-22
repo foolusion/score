@@ -34,6 +34,7 @@ const style = {
   alignItems: 'stretch',
   justifyContent: 'center',
   maxWidth: '400px',
+  position: 'relative',
 };
 
 const buttonStyle = {
@@ -61,7 +62,6 @@ const Player = props => {
     >{v}</button>);
 
   return (
-    <div style={{ position: 'relative' }}>
     <div style={style}>
       <div style={{ flex: '2 0 0', display: 'flex' }}>
         <div style={{ flex: '0 2 75%' }}><h1>{name}</h1></div>
@@ -76,13 +76,10 @@ const Player = props => {
       <div style={{ flex: '0 0 100%', display: 'flex' }}>{addScoreButtons}</div>
       <div style={{ display: 'block', position: 'absolute', right: '15px', top: '0px', fontSize: '2em' }} onClick={onRemovePlayerClick}>×</div>
     </div>
-    </div>
   );
 };
 
 const propTypes = {
-  id: PropTypes.number.isRequired,
-  active: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
   diff: PropTypes.number.isRequired,
