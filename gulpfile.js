@@ -17,7 +17,7 @@ b.transform(babelify, {presets: ['es2015', 'stage-2', 'react']});
 
 b.on('update', bundle);
 b.on('log', gutil.log)
-function bundle() {
+function minify() {
   return b.bundle()
   .pipe(source('bundle.js'))
   .pipe(buffer())
@@ -26,5 +26,14 @@ function bundle() {
   .pipe(gulp.dest('./dist'));
 };
 
+function bundle() {
+  return b.bundle()
+  .pipe(source('bundle.js'))
+  .pipe(buffer())
+  .pipe(sourcemaps.write('./'))
+  .pipe(gulp.dest('./dist'));
+};
+
 gulp.task('build', bundle);
+gulp.task('prod', minify);
 gulp.task('default', ['build']);
